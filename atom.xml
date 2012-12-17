@@ -4,7 +4,7 @@
   <title><![CDATA[Blog of Eddix]]></title>
   <link href="http://eddix.github.com/atom.xml" rel="self"/>
   <link href="http://eddix.github.com/"/>
-  <updated>2012-12-17T18:55:21+08:00</updated>
+  <updated>2012-12-17T18:57:21+08:00</updated>
   <id>http://eddix.github.com/</id>
   <author>
     <name><![CDATA[eddix]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[missing-postfields-in-libcurl-cause-close-wait]]></title>
+    <title type="html"><![CDATA[未设置POSTFIELDS参数导致libcurl程序出现CLOSE_WAIT]]></title>
     <link href="http://eddix.github.com/blog/2012/12/17/missing-postfields-in-libcurl-cause-close-wait/"/>
     <updated>2012-12-17T18:22:00+08:00</updated>
     <id>http://eddix.github.com/blog/2012/12/17/missing-postfields-in-libcurl-cause-close-wait</id>
