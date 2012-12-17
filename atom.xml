@@ -4,7 +4,7 @@
   <title><![CDATA[Blog of Eddix]]></title>
   <link href="http://eddix.github.com/atom.xml" rel="self"/>
   <link href="http://eddix.github.com/"/>
-  <updated>2012-12-17T18:53:25+08:00</updated>
+  <updated>2012-12-17T18:55:21+08:00</updated>
   <id>http://eddix.github.com/</id>
   <author>
     <name><![CDATA[eddix]]></name>
@@ -22,7 +22,77 @@
 
 <p>最初的源代码如下：</p>
 
-<p>File /Users/eddix/Codes/eddix.me/source/downloads/code/curlpost.c could not be found</p>
+<figure class='code'><figcaption><span> (curlpost.c)</span> <a href='http://eddix.github.com/downloads/code/curlpost.c'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;curl/curl.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CURLcode</span> <span class="n">res</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CURL</span> <span class="o">*</span> <span class="n">curl_handle</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">oauth_header_string</span><span class="p">[</span><span class="n">BUFSIZ</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">curl_slist</span> <span class="o">*</span> <span class="n">headers</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// handle initialize, error handling is missing for example.</span>
+</span><span class='line'>    <span class="n">res</span> <span class="o">=</span> <span class="n">curl_global_init</span><span class="p">(</span><span class="n">CURL_GLOBAL_DEFAULT</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">curl_handle</span> <span class="o">=</span> <span class="n">curl_easy_init</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">,</span> <span class="n">CURLOPT_URL</span><span class="p">,</span> <span class="s">&quot;https://example.com/post&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">,</span> <span class="n">CURLOPT_POST</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">oauth_header_string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">strcat</span><span class="p">(</span><span class="n">oauth_header_string</span><span class="p">,</span> <span class="s">&quot;Authorization: OAuth &quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">strcat</span><span class="p">(</span><span class="n">oauth_header_string</span><span class="p">,</span> <span class="s">&quot;oauth_version=</span><span class="se">\&quot;</span><span class="s">1.0</span><span class="se">\&quot;</span><span class="s">, &quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// ... oauth header code ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">headers</span> <span class="o">=</span> <span class="n">curl_slist_append</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">oauth_header_string</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">,</span> <span class="n">CURLOPT_HTTPHEADER</span><span class="p">,</span> <span class="n">headers</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">res</span> <span class="o">=</span> <span class="n">curl_easy_perform</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">curl_easy_cleanup</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">curl_global_cleanup</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>因为服务端要求此请求必须用POST协议，但这次请求没有数据需要POST，所以只设置了POST方法。</p>
 
