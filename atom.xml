@@ -4,7 +4,7 @@
   <title><![CDATA[Blog of Eddix]]></title>
   <link href="http://eddix.github.com/atom.xml" rel="self"/>
   <link href="http://eddix.github.com/"/>
-  <updated>2012-12-17T19:11:04+08:00</updated>
+  <updated>2012-12-17T19:12:31+08:00</updated>
   <id>http://eddix.github.com/</id>
   <author>
     <name><![CDATA[eddix]]></name>
@@ -21,6 +21,11 @@
     <content type="html"><![CDATA[<p>用libcurl写一个网络程序，在一个POST请求中老是出现CLOSE_WAIT情况，今天终于得空来解决这个问题。</p>
 
 <p>最初的源代码如下：</p>
+
+<!--more-->
+
+
+
 
 <figure class='code'><figcaption><span> (curlpost.c)</span> <a href='http://eddix.github.com/downloads/code/curlpost.c'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -105,9 +110,6 @@
 
 <p>接下来倒是不出错了，因为请求一直hang住了。<code>netstat -ano</code>一看，端口处于<code>CLOSE_WAIT</code>状态。</p>
 
-<!--more-->
-
-
 <p>先google了一把，发现很多人提到需要设置CURLOPT_FORBID_REUSE。好吧，加上试试：</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -161,6 +163,9 @@
 
 <p>我有幸做过一段时间产品设计，加上自己业余时间也独立开发过一些项目，发现一个比较有效的方法，分享于此。主要给一些产品设计新手作为参考。</p>
 
+<!--more-->
+
+
 <h2>REST</h2>
 
 <p>人类发明了计算机，并用二进制的方式将命令发给处理器。先驱和先烈们发现处理器命令都是类似<code>10011100</code>这样的东西，没法记，就发明了汇编。汇编之后产生了程序设计语言和对应的编译器，再后来，人们发现命令式的编程语言仍然难以驾驭现实问题的复杂性，又发明了面向对象的编程语言。无论你认为函数式编程会比面向对象高级几条街，不可否认的是，在大量的项目中，面向对象仍然是首选的编程方式。</p>
@@ -174,9 +179,6 @@
 <p>前半句话比较容易理解：比如一个Blog系统，则至少有文章（Artical）和评论（Comment）两种资源；一个电子商务系统，至少有商品（Commodity）、购物车（Cart）、订单（Order）和顾客（Customer）四种资源。</p>
 
 <p>后半句话怎么理解呢？</p>
-
-<!--more-->
-
 
 <h2>CURD</h2>
 

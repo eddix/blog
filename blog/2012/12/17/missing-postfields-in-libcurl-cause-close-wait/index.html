@@ -90,6 +90,11 @@ and i am you and what i see is me.</p>
 
 <p>最初的源代码如下：</p>
 
+<!--more-->
+
+
+
+
 <figure class='code'><figcaption><span> (curlpost.c)</span> <a href='/downloads/code/curlpost.c'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -172,9 +177,6 @@ and i am you and what i see is me.</p>
 
 
 <p>接下来倒是不出错了，因为请求一直hang住了。<code>netstat -ano</code>一看，端口处于<code>CLOSE_WAIT</code>状态。</p>
-
-<!--more-->
-
 
 <p>先google了一把，发现很多人提到需要设置CURLOPT_FORBID_REUSE。好吧，加上试试：</p>
 
