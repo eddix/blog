@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Blog of Eddix</title>
+	<title>基于REST方法的产品设计 - Blog of Eddix</title>
 	<meta name="author" content="eddix">
 
 	
-	<meta name="description" content="用libcurl写一个网络程序，在一个POST请求中老是出现CLOSE_WAIT情况，今天终于得空来解决这个问题。 最初的源代码如下： File /Users/eddix/Codes/eddix.me/source/downloads/code/curlpost.c could not be &hellip;">
+	<meta name="description" content="在我不长不短的产品开发生涯中，我接触到的苦逼的程序员最怕碰到的是不靠谱的产品设计。很多初出道的产品设计由于没有真正接触过开发，也无法理解开发到底是在做什么，经常会画蛇添足地增加不必要的功能，同时却没有把核心功能的方方面面都覆盖到位。 他们最常说的两句话是： “就加一个输入框和一个按钮， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -62,79 +62,9 @@ and i am you and what i see is me.</p>
 				
 			
 			<div class="mid-col-container">
-				<div id="content" class="inner">
-
-
-    <article class="post">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-17T18:22:00+08:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title"><a href="/blog/2012/12/17/missing-postfields-in-libcurl-cause-close-wait/">Missing-postfields-in-libcurl-cause-close-wait</a></h1>
-	<div class="entry-content">
-		<p>用libcurl写一个网络程序，在一个POST请求中老是出现CLOSE_WAIT情况，今天终于得空来解决这个问题。</p>
-
-<p>最初的源代码如下：</p>
-
-<p>File /Users/eddix/Codes/eddix.me/source/downloads/code/curlpost.c could not be found</p>
-
-<p>因为服务端要求此请求必须用POST协议，但这次请求没有数据需要POST，所以只设置了POST方法。</p>
-
-<p>首先发现出错是在请求头多了一个<code>Expect: 100-continue</code>，看看文档，如果是HTTP 1.1的协议，curl会自动加上这个头，加上一行代码干掉：</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>    <span class="n">headers</span> <span class="o">=</span> <span class="n">curl_slist_append</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="s">&quot;Expect: &quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>接下来倒是不出错了，因为请求一直hang住了。<code>netstat -ano</code>一看，端口处于<code>CLOSE_WAIT</code>状态。</p>
-
-
-		
-		<a href="/blog/2012/12/17/missing-postfields-in-libcurl-cause-close-wait/" class="more-link">Read on &rarr;</a>
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-15T00:09:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2012</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title"><a href="/blog/2012/12/15/restful-product/">基于REST方法的产品设计</a></h1>
-	<div class="entry-content">
-		<p>在我不长不短的产品开发生涯中，我接触到的苦逼的程序员最怕碰到的是不靠谱的产品设计。很多初出道的产品设计由于没有真正接触过开发，也无法理解开发到底是在做什么，经常会画蛇添足地增加不必要的功能，同时却没有把核心功能的方方面面都覆盖到位。</p>
+				<div id="content" class="inner"><article class="post">
+	<h1 class="title">基于REST方法的产品设计</h1>
+	<div class="entry-content"><p>在我不长不短的产品开发生涯中，我接触到的苦逼的程序员最怕碰到的是不靠谱的产品设计。很多初出道的产品设计由于没有真正接触过开发，也无法理解开发到底是在做什么，经常会画蛇添足地增加不必要的功能，同时却没有把核心功能的方方面面都覆盖到位。</p>
 
 <p>他们最常说的两句话是：</p>
 
@@ -230,138 +160,28 @@ and i am you and what i see is me.</p>
 <p>如果你是在设计一个非常抽象也非常技术化的服务，比如设计一个OAuth服务的时候，要想明白其中的REST资源就比较困难，拿<code>secret_key</code>让用户去<code>authorizen</code>页授权再由后台去获取<code>access_token</code>，嗯，这超出大多数产品设计师的能力范围了，这也不奇怪，OAuth这样的“产品”本身就是由工程师设计出来的。这种情况下，你做好你能想像到的资源的设计，并相信你的技术团队能帮你搞定你想不出来的那部分就行了。</p>
 
 <p>另外我相信牛逼的产品设计师不需要拿这七条去挨个校对，这世上就是那样一些人，他们丰富的经验和教训已经教会他们如何如何设计完整的产品流程并形成功能闭环，在说到删除<code>destroy</code>功能的时候他们还补充说到：不能真删除，做一个标记位把它标记为删除就行了，数据还要保存在我们数据库中，郭嘉要求要保留至少三个月以备查案底呢。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-02T17:23:00+08:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2012</time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/heroku/'>Heroku</a>, <a class='category' href='/blog/categories/octopress/'>Octopress</a>, <a class='category' href='/blog/categories/skill/'>Skill</a>
-
-
 </div>
-		
-	</div>
-	<h1 class="title"><a href="/blog/2012/07/02/simple-octopress-note/">使用Octopress搭建博客</a></h1>
-	<div class="entry-content">
-		<h2>安装Octopress</h2>
-
-<p>去<a href="https://github.com/imathis/octopress">github</a>上clone一份出来即可。</p>
-
-<pre><code>git clone https://github.com/imathis/octopress
-</code></pre>
-
-<p>修改<code>.rvmrc</code>为自己的环境配置。</p>
-
-<pre><code>rvm use 1.9.3@octopress
-bundle update
-</code></pre>
-
-<h2>配置Octopress</h2>
-
-<p>修改<code>_config.yml</code>，里面有各种url，标题，副标题等配置。</p>
-
-
-		
-		<a href="/blog/2012/07/02/simple-octopress-note/" class="more-link">Read on &rarr;</a>
-	</div>
 
 </article>
 
-
-    <article class="post">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-15T02:08:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time></div>
-		<div class="tags">
-
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
 </div>
-		
-	</div>
-	<h1 class="title"><a href="/blog/2012/03/15/first-blog-from-octpress/">新域名和新Blog</a></h1>
-	<div class="entry-content">
-		<p>买了<a href="http://eddix.me/">eddix.me</a>这个域名，搭好了新的博客系统。接下来就找个时间把以前的blog全搬过来吧。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post">
-	<div class="meta">
-		<div class="date">
 
 
 
-
-
-
-
-
-  
-
-
-<time datetime="2010-11-13T02:23:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2010</time></div>
-		<div class="tags">
-
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-		
-	</div>
-	<h1 class="title"><a href="/blog/2010/11/13/stranger-of-mainland/">祖国的陌生人</a></h1>
-	<div class="entry-content">
-		<p>是旅行引发旅行。2007年的夏天，作为对“不了解中国国情”的批评的回应和自省，32岁的许知远从黑龙江的爱辉出发，开始了为期四十天的旅行。就像他难以避免在写作时使用翻译体一样，书本的熏陶使他选择了云南的腾冲作为终点，这样他的路线就因或多或少地沿着胡焕庸线而显得有了某种意义。</p>
-
-<p>我是在世界杯小组赛中巴西对战葡萄牙的那一场比赛的晚上在单向街书店买到他的这本旅行札记。在朝阳公园蓝色港湾的夜景里，单向街书店在仿造欧州风格的商业巷中显得温暖而静谧。繁华的商场与静静流淌的亮马河的双重包围，使得书店同时带上了镀金时代与文艺复兴的双重色彩。我已经忘了在酒吧里看比赛的情景，却记得那些意味深长的细节。那是一个奇特的夜晚，权贵们的后代开着名贵跑车带着性感漂亮的姑娘在这昂贵的国际商区中共度良宵，同时正在比赛的朝鲜队在主体思想的领导下仍然让科勒迪瓦踹进了三个球输掉了比赛，有关他们回国之后是否会去挖媒的讨论充斥在第二天的各个聊天群中，而书店的售货员正低声地回答我为何许知远的很多活动都与这家书店有关：他是这家书店的股东。</p>
-
-<p>没有什么比旅行更能安慰一个深陷无休止的加班、争吵与彷徨的人了，哪怕它只是暂时的。更何况我也面临同样的境地：我在我的祖国，我却只是一个陌生人。因此当叶师傅问我十一的时候是否去青海湖骑行的时候，我稍作犹豫之后便答应了，并从我拥有不太好看的帐单的信用卡里支付了来回的火车票和机票费。</p>
-
-<p>是的，我该出去走走了，否则我会以为世界就是这么大了。</p>
-
-
-		
-		<a href="/blog/2010/11/13/stranger-of-mainland/" class="more-link">Read on &rarr;</a>
-	</div>
-
-</article>
-
-<nav id="pagenavi">
-    
-    
-    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
-</nav></div>
+</section>
+</div>
 			</div>
 			<footer id="footer" class="inner">Copyright &copy; 2012
 
@@ -382,7 +202,10 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       var disqus_shortname = 'eddixme';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://eddix.github.com/blog/2012/12/15/restful-product/';
+        var disqus_url = 'http://eddix.github.com/blog/2012/12/15/restful-product/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
