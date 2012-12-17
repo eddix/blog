@@ -178,8 +178,10 @@ and i am you and what i see is me.</p>
 
 <p>先google了一把，发现很多人提到需要设置CURLOPT_FORBID_REUSE。好吧，加上试试：</p>
 
-<pre><code>curl_easy_setopt(curl_handle, CURLOPT_FORBID_REUSE, 1);
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'>    <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl_handle</span><span class="p">,</span> <span class="n">CURLOPT_FORBID_REUSE</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>没用。</p>
 
