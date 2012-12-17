@@ -4,7 +4,7 @@
   <title><![CDATA[Blog of Eddix]]></title>
   <link href="http://eddix.github.com/atom.xml" rel="self"/>
   <link href="http://eddix.github.com/"/>
-  <updated>2012-12-17T19:06:09+08:00</updated>
+  <updated>2012-12-17T19:11:04+08:00</updated>
   <id>http://eddix.github.com/</id>
   <author>
     <name><![CDATA[eddix]]></name>
@@ -174,6 +174,9 @@
 <p>前半句话比较容易理解：比如一个Blog系统，则至少有文章（Artical）和评论（Comment）两种资源；一个电子商务系统，至少有商品（Commodity）、购物车（Cart）、订单（Order）和顾客（Customer）四种资源。</p>
 
 <p>后半句话怎么理解呢？</p>
+
+<!--more-->
+
 
 <h2>CURD</h2>
 

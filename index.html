@@ -257,73 +257,9 @@ and i am you and what i see is me.</p>
 
 <p>后半句话怎么理解呢？</p>
 
-<h2>CURD</h2>
-
-<p>CURD是针对一个资源最基本的四种操作：创建（Create），更新（Update），读取（Read）和删除（Destroy）。在实际的应用中，因为用户的参与，还需要在增加三个操作：新建（New），编辑（Edit）和索引（Index）。这七个操作，也就是Rails在引入REST资源概念之后所默认的七种方法。</p>
-
-<p>基本上在产品设计的时候，拿着这七种方法去检查功能的设计，不能保证你能设计出完美的产品（那是你的命运应该负责的事），但至少不会设计出功能缺失的产品。也就是说你那两句常说的话可以少说很多次了。</p>
-
-<p>来看例子。</p>
-
-<h2>简单应用</h2>
-
-<p>我们把七种方法稍加整理，变成五部分：</p>
-
-<ul>
-<li>index</li>
-<li>show(read)</li>
-<li>new &amp; create</li>
-<li>edit &amp; update</li>
-<li>destroy</li>
-</ul>
-
-
-<p>以Blog中的Artical为例。</p>
-
-<p><code>index</code>的意思是索引，也就是如何展示资源的集合。在这里，就是如何展示多篇文章。这就是Blog的列表页，无论你是否要翻页，一页显示5条还是10条，你总不能把这个页面给省掉吧。</p>
-
-<p><code>show</code>的意思是如何展示单个资源，在大多数blog系统中就是单篇文章的页面。</p>
-
-<p><code>new</code>和<code>create</code>描述如何创建一个新的资源，也就是如何创建一篇新的文章。但这其实包含两部分：填写新文章的输入页面，和提交新文章时的反馈。前一部分就是新文章的表单页，而后一部分则需要设计：是给一个成功提示页，还是直接跳转到新文章的展示页（<code>show</code>），又或者是跳到集合页（<code>index</code>）。</p>
-
-<p><code>edit</code>和<code>update</code>同样，前者是修改文章的编辑页，后者是提交修改后的反馈：成功提示页、跳到文章展示页，又或者是跳到集合页。</p>
-
-<p><code>destory</code>很简单，提交删除之后，如何返回：提示删除成功，或者跳到集合页（嗯，这时候被删的那条已经不见了）。</p>
-
-<p>以上就是一个Artical所必须的七个页面，当然可以在真实的设计中将其中某些页面做成多次显示，比如Blog系统前台需要显示集合页，后台管理系统中同样会显示文章集合。但是你不能省掉其中某个方法，不然功能就残了。</p>
-
-<p>对于Artical资源，这七种方法当然缺一不可。幸运的是，我在前面说过，这七种方法是用来检查有无缺失的，并不表示对于每种资源都需要完备的七个页面才行。比如对于Comment资源，评论都显示在文章下方，所以只有<code>index</code>页，没有针对单条评论的<code>show</code>页，同时修改和更新也不需要，所以<code>edit</code>和<code>update</code>也不用设计。就剩下<code>index</code>，<code>new</code>，<code>create</code>和<code>destory</code>四种方法需要设计——你已经审视过并确认另外三个可以没有了，不用担心自己是否漏掉什么重要的东西了。</p>
-
-<h2>抽象应用</h2>
-
-<p>如果你已经熟练应用这个方法了，那么可以开始训练自己用这种方法审视抽象资源了。</p>
-
-<p>比如，用户注册(<code>new</code>)，修改资源（<code>edit</code>）甚至注销账号（<code>destory</code>）都可以用上面的方法来检查，但是，用户登陆（<code>login</code>）和登出（<code>logout</code>）呢？</p>
-
-<p>这里需要一些抽象思维。在大多数产品的实现中，用户在线状态实际上是由一种叫<code>session</code>的东西来保存的。你可以理解为某种不可见的东西，用户带在身上，就表示登陆了，不在身上了，就登出了。</p>
-
-<p>那么针对<code>session</code>这种抽象资源，如何应用REST规则呢？很简单。</p>
-
-<p>首先，我们也许不需要看到有哪些用户在线，因此，针对<code>session</code>的<code>index</code>页可以不用考虑。</p>
-
-<p>新建<code>session</code>资源的页面在哪儿呢？也许你已经想到了，那就是登陆页。实际上<code>session</code>的新建（<code>new</code>）就是用户输入用户名和密码那个页面，提交之后如果成功，那么就成功创建（<code>create</code>）了一个<code>session</code>资源。因此登陆后的页面就是<code>session</code>的<code>show</code>页面了——我们展示已登陆的用户的账号信息，其实质就是展示他身上带的<code>session</code>。</p>
-
-<p>大多数情况下用户不会修改自己的登陆状态——再说，又能改成啥呢？因此，你可以放心地把<code>edit</code>和<code>update</code>扔掉，最后，只剩下删除（<code>destroy</code>）<code>session</code>的页面了，这就是<code>logout</code>。</p>
-
-<h2>总结</h2>
-
-<p>记下这七个方法：<code>index</code>，<code>show</code>，<code>new</code>，<code>create</code>，<code>edit</code>，<code>update</code>，<code>destory</code>。没事玩别人产品的时候多思考一下那些让你赞叹的产品是如何实现这七个方法的，以及哪些让你抓狂的产品是缺失了哪个方法导致你玩不顺畅的。你应该很快能够成长到避免一些初级错误的阶段。</p>
-
-<h2>例外</h2>
-
-<p>所有模式都是错的，但有些可以用。</p>
-
-<p>如果你是在设计一个非常抽象也非常技术化的服务，比如设计一个OAuth服务的时候，要想明白其中的REST资源就比较困难，拿<code>secret_key</code>让用户去<code>authorizen</code>页授权再由后台去获取<code>access_token</code>，嗯，这超出大多数产品设计师的能力范围了，这也不奇怪，OAuth这样的“产品”本身就是由工程师设计出来的。这种情况下，你做好你能想像到的资源的设计，并相信你的技术团队能帮你搞定你想不出来的那部分就行了。</p>
-
-<p>另外我相信牛逼的产品设计师不需要拿这七条去挨个校对，这世上就是那样一些人，他们丰富的经验和教训已经教会他们如何如何设计完整的产品流程并形成功能闭环，在说到删除<code>destroy</code>功能的时候他们还补充说到：不能真删除，做一个标记位把它标记为删除就行了，数据还要保存在我们数据库中，郭嘉要求要保留至少三个月以备查案底呢。</p>
 
 		
-		
+		<a href="/blog/2012/12/15/restful-product/" class="more-link">Read on &rarr;</a>
 	</div>
 
 </article>
