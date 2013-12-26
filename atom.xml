@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Blog of Eddix]]></title>
-  <link href="http://eddix.github.com/atom.xml" rel="self"/>
-  <link href="http://eddix.github.com/"/>
-  <updated>2013-12-26T11:08:55+08:00</updated>
-  <id>http://eddix.github.com/</id>
+  <link href="http://eddix.me/atom.xml" rel="self"/>
+  <link href="http://eddix.me/"/>
+  <updated>2013-12-26T11:12:19+08:00</updated>
+  <id>http://eddix.me/</id>
   <author>
     <name><![CDATA[eddix]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[基于REST方法的产品设计]]></title>
-    <link href="http://eddix.github.com/blog/2012/12/15/restful-product/"/>
+    <link href="http://eddix.me/blog/2012/12/15/restful-product/"/>
     <updated>2012-12-15T00:09:00+08:00</updated>
-    <id>http://eddix.github.com/blog/2012/12/15/restful-product</id>
+    <id>http://eddix.me/blog/2012/12/15/restful-product</id>
     <content type="html"><![CDATA[<p>在我不长不短的产品开发生涯中，我接触到的苦逼的程序员最怕碰到的是不靠谱的产品设计。很多初出道的产品设计由于没有真正接触过开发，也无法理解开发到底是在做什么，经常会画蛇添足地增加不必要的功能，同时却没有把核心功能的方方面面都覆盖到位。</p>
 
 <p>他们最常说的两句话是：</p>
@@ -125,9 +125,9 @@
   
   <entry>
     <title type="html"><![CDATA[使用Octopress搭建博客]]></title>
-    <link href="http://eddix.github.com/blog/2012/07/02/simple-octopress-note/"/>
+    <link href="http://eddix.me/blog/2012/07/02/simple-octopress-note/"/>
     <updated>2012-07-02T17:23:00+08:00</updated>
-    <id>http://eddix.github.com/blog/2012/07/02/simple-octopress-note</id>
+    <id>http://eddix.me/blog/2012/07/02/simple-octopress-note</id>
     <content type="html"><![CDATA[<h2>安装Octopress</h2>
 
 <p>去<a href="https://github.com/imathis/octopress">github</a>上clone一份出来即可。</p>
@@ -175,18 +175,18 @@ git push -u heroku master
   
   <entry>
     <title type="html"><![CDATA[新域名和新Blog]]></title>
-    <link href="http://eddix.github.com/blog/2012/03/15/first-blog-from-octpress/"/>
+    <link href="http://eddix.me/blog/2012/03/15/first-blog-from-octpress/"/>
     <updated>2012-03-15T02:08:00+08:00</updated>
-    <id>http://eddix.github.com/blog/2012/03/15/first-blog-from-octpress</id>
+    <id>http://eddix.me/blog/2012/03/15/first-blog-from-octpress</id>
     <content type="html"><![CDATA[<p>买了<a href="http://eddix.me/">eddix.me</a>这个域名，搭好了新的博客系统。接下来就找个时间把以前的blog全搬过来吧。</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[祖国的陌生人]]></title>
-    <link href="http://eddix.github.com/blog/2010/11/13/stranger-of-mainland/"/>
+    <link href="http://eddix.me/blog/2010/11/13/stranger-of-mainland/"/>
     <updated>2010-11-13T02:23:00+08:00</updated>
-    <id>http://eddix.github.com/blog/2010/11/13/stranger-of-mainland</id>
+    <id>http://eddix.me/blog/2010/11/13/stranger-of-mainland</id>
     <content type="html"><![CDATA[<p>是旅行引发旅行。2007年的夏天，作为对“不了解中国国情”的批评的回应和自省，32岁的许知远从黑龙江的爱辉出发，开始了为期四十天的旅行。就像他难以避免在写作时使用翻译体一样，书本的熏陶使他选择了云南的腾冲作为终点，这样他的路线就因或多或少地沿着胡焕庸线而显得有了某种意义。</p>
 
 <p>我是在世界杯小组赛中巴西对战葡萄牙的那一场比赛的晚上在单向街书店买到他的这本旅行札记。在朝阳公园蓝色港湾的夜景里，单向街书店在仿造欧州风格的商业巷中显得温暖而静谧。繁华的商场与静静流淌的亮马河的双重包围，使得书店同时带上了镀金时代与文艺复兴的双重色彩。我已经忘了在酒吧里看比赛的情景，却记得那些意味深长的细节。那是一个奇特的夜晚，权贵们的后代开着名贵跑车带着性感漂亮的姑娘在这昂贵的国际商区中共度良宵，同时正在比赛的朝鲜队在主体思想的领导下仍然让科勒迪瓦踹进了三个球输掉了比赛，有关他们回国之后是否会去挖媒的讨论充斥在第二天的各个聊天群中，而书店的售货员正低声地回答我为何许知远的很多活动都与这家书店有关：他是这家书店的股东。</p>
