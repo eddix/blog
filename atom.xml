@@ -4,7 +4,7 @@
   <title><![CDATA[Blog of Eddix]]></title>
   <link href="http://eddix.me/atom.xml" rel="self"/>
   <link href="http://eddix.me/"/>
-  <updated>2013-12-26T11:12:19+08:00</updated>
+  <updated>2013-12-26T11:55:22+08:00</updated>
   <id>http://eddix.me/</id>
   <author>
     <name><![CDATA[eddix]]></name>
@@ -170,15 +170,6 @@ git commit -m 'add post post title'
 git remote add heroku git@heroku.com:app.git
 git push -u heroku master
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[新域名和新Blog]]></title>
-    <link href="http://eddix.me/blog/2012/03/15/first-blog-from-octpress/"/>
-    <updated>2012-03-15T02:08:00+08:00</updated>
-    <id>http://eddix.me/blog/2012/03/15/first-blog-from-octpress</id>
-    <content type="html"><![CDATA[<p>买了<a href="http://eddix.me/">eddix.me</a>这个域名，搭好了新的博客系统。接下来就找个时间把以前的blog全搬过来吧。</p>
 ]]></content>
   </entry>
   
