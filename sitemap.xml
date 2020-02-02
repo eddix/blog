@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://eddix.me/about/</loc>
+    <lastmod>2020-02-02T18:26:32+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/</loc>
+    <lastmod>2020-02-02T18:26:32+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://eddix.me/posts/paradigm-shift-of-open-source/</loc>
     <lastmod>2019-06-28T19:21:50+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://eddix.me/posts/</loc>
-    <lastmod>2019-06-28T19:21:50+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://eddix.me/</loc>
     <lastmod>2019-06-28T19:21:50+08:00</lastmod>
   </url>
   
