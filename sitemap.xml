@@ -1,35 +1,28 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
-    <url>
-        <loc>http://eddix.me/blog/2010/11/13/stranger-of-mainland/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/blog/2012/07/02/simple-octopress-note/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/blog/2012/12/15/restful-product/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/about-me/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/blog/archives/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/blog/categories/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/</loc>
-        <lastmod>2013-12-26T12:15:00+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://eddix.me/robots.txt</loc>
-        <lastmod>2013-12-26T11:04:17+08:00</lastmod>
-    </url>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://eddix.me/posts/paradigm-shift-of-open-source/</loc>
+    <lastmod>2019-06-28T19:21:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/posts/</loc>
+    <lastmod>2019-06-28T19:21:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/</loc>
+    <lastmod>2019-06-28T19:21:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/tags/</loc>
+  </url>
+  
 </urlset>
