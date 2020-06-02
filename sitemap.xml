@@ -3,6 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://eddix.me/posts/pattern-of-daemon-goroutine/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/categories/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/tags/go/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/posts/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/categories/principle2pattern/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://eddix.me/tags/</loc>
+    <lastmod>2020-06-02T12:09:34+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://eddix.me/</loc>
     <lastmod>2020-02-02T18:26:32+08:00</lastmod>
   </url>
@@ -15,19 +45,6 @@
   <url>
     <loc>http://eddix.me/posts/paradigm-shift-of-open-source/</loc>
     <lastmod>2019-06-28T19:21:50+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://eddix.me/posts/</loc>
-    <lastmod>2019-06-28T19:21:50+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://eddix.me/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>http://eddix.me/tags/</loc>
   </url>
   
 </urlset>

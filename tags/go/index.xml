@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on 🔱The Wall of Eddix</title>
+    <link>http://eddix.me/tags/go/</link>
+    <description>Recent content in Go on 🔱The Wall of Eddix</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 02 Jun 2020 12:09:34 +0800</lastBuildDate>
+    
+	<atom:link href="http://eddix.me/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>[Go] 写一个守护协程的通用套路是什么？</title>
+      <link>http://eddix.me/posts/pattern-of-daemon-goroutine/</link>
+      <pubDate>Tue, 02 Jun 2020 12:09:34 +0800</pubDate>
+      
+      <guid>http://eddix.me/posts/pattern-of-daemon-goroutine/</guid>
+      <description>背景 根据一个 Goroutine 是否直接依赖用户交互，我们可以将 Goroutine 分为两大类，一类是直接依赖用户交互的前台协程，比如 HTTP Server Handler等；另一类是不直接依赖用户交互的后台协程，比如 HTTP Server，定时任务协程等。前台协程随用户的交互开始执行，随交互结束而结束，比较容易设计。本文主要讨论后台协程设计的一些通用套路。
+一个良好的后台协程需要至少满足以下两个诉求：
+ 容易控制，尤其是启动、停止、重启等操作。 状态容易被观察，比如是否正在运行中。  针对这两个诉求，我们来寻找一个通用的实现套路。
+设计与实现 简陋的后台协程 得益于 Go 从语法上对并发的支持，写一个简陋的后台协程再简单不过了。我们从下面这个 Demo 开始讨论，这个 Demo 的任务很简单，每隔一秒钟将下一个斐波那契数输出在标准输出里面。
+package main type Fibonacci struct { a, b int } func NewFibonacci() *Fibonacci { return &amp;amp;Fibonacci{a:0, b:1} } func (f *Fibonacci) Run() { go func() { for { time.Sleep(time.Second) fmt.Println(f.b) f.a, f.b = f.b, f.a + f.b } }() } func main() { NewFibonacci().Run() } 直接执行这个程序，什么都不会输出，因为主协程里面没有任何逻辑执行，程序启动后直接就退出了，对吧？不过现实中许多后台协程就是这样写的，因为真实世界里很多主协程是有其它任务在执行的，所以 Fibonacci 会一直执行下去，直到程序结束。</description>
+    </item>
+    
+  </channel>
+</rss>
