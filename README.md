@@ -1,2 +1,2 @@
-# eddix.github.com
+# blog
 github page of eddix.me
