@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Eddix Chen">
+    <meta name="description" content="personal homepage">
+    <meta name="keywords" content="blog,developer,coder,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[Go]设置各种选项的最佳套路"/>
+<meta name="twitter:description" content="背景 在 Go 里面写一个 struct 时，经常会遇到要给 struct 里面的各个字段提供设置功能。这个问题看起来很简单很容易，实际上困扰了不少人，连 Go 的三巨头之一 Rob Pike 都曾经为之苦恼了一段时间，后来找到了最佳实践后还为此开心地写了一篇 Blog。
+我最早是在 GRPC 的代码里发现这个套路的，后来在今年7月 Go 官方 Blog 里又看到了对这个套路的推荐，以及 Rob Pike 的 Blog 链接。我自己在代码里尝试之后感觉很好，又推荐给同事尝试，大家都很喜欢。
+示范案例 我用这样一个需求案例来对比一下各种套路的优劣。
+我们要写一个 struct，它的核心功能是创建一个网络连接 net.Conn 的实例，也就是实现下面这个方法：
+type MyDialer struct { dialer *net.Dialer } func (d *MyDialer) DialContext(ctx context.Context, addr net.Addr) (net.Conn, error) { return d.dialer.DialContext(ctx, addr.Network(), addr.String()) } 针对这个 Dialer ，我们增加两个选项，一个是连接超时，一个是重试次数。代码就变成了这样：
+type MyDialer struct { dialer *net.Dialer timeout time.Duration retry int } func (d *MyDialer) DialContext(ctx context."/>
+
+    <meta property="og:title" content="[Go]设置各种选项的最佳套路" />
+<meta property="og:description" content="背景 在 Go 里面写一个 struct 时，经常会遇到要给 struct 里面的各个字段提供设置功能。这个问题看起来很简单很容易，实际上困扰了不少人，连 Go 的三巨头之一 Rob Pike 都曾经为之苦恼了一段时间，后来找到了最佳实践后还为此开心地写了一篇 Blog。
+我最早是在 GRPC 的代码里发现这个套路的，后来在今年7月 Go 官方 Blog 里又看到了对这个套路的推荐，以及 Rob Pike 的 Blog 链接。我自己在代码里尝试之后感觉很好，又推荐给同事尝试，大家都很喜欢。
+示范案例 我用这样一个需求案例来对比一下各种套路的优劣。
+我们要写一个 struct，它的核心功能是创建一个网络连接 net.Conn 的实例，也就是实现下面这个方法：
+type MyDialer struct { dialer *net.Dialer } func (d *MyDialer) DialContext(ctx context.Context, addr net.Addr) (net.Conn, error) { return d.dialer.DialContext(ctx, addr.Network(), addr.String()) } 针对这个 Dialer ，我们增加两个选项，一个是连接超时，一个是重试次数。代码就变成了这样：
+type MyDialer struct { dialer *net.Dialer timeout time.Duration retry int } func (d *MyDialer) DialContext(ctx context." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://eddix.me/posts/option-types-pattern/" />
+<meta property="article:published_time" content="2020-09-18T15:20:09+08:00" />
+<meta property="article:modified_time" content="2020-09-18T15:20:09+08:00" />
+
+
+    
+      <base href="http://eddix.me/posts/option-types-pattern/">
+    
+    <title>
+  [Go]设置各种选项的最佳套路 · 🔱The Wall of Eddix
+</title>
+
+    
+      <link rel="canonical" href="http://eddix.me/posts/option-types-pattern/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.624134b411585efffadab6a91e7d0383f0d4e22ad49de3690eccbc96f528e670.css" integrity="sha256-YkE0tBFYXv/62rapHn0Dg/DU4irUneNpDsy8lvUo5nA=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="http://eddix.me/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="http://eddix.me/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.75.1" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      🔱The Wall of Eddix
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="http://eddix.me/posts/">📓Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="http://eddix.me/about/">😷About</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">[Go]设置各种选项的最佳套路</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-09-18T15:20:09&#43;08:00'>
+                September 18, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <h1 id="背景">背景</h1>
+<p>在 Go 里面写一个 struct 时，经常会遇到要给 struct 里面的各个字段提供设置功能。这个问题看起来很简单很容易，实际上困扰了不少人，连 Go 的三巨头之一 Rob Pike 都曾经为之苦恼了一段时间，后来找到了最佳实践后还为此开心地写了一篇 Blog。</p>
+<p>我最早是在 GRPC 的代码里发现这个套路的，后来在今年7月 Go 官方 Blog 里又看到了对这个套路的推荐，以及 Rob Pike 的 Blog 链接。我自己在代码里尝试之后感觉很好，又推荐给同事尝试，大家都很喜欢。</p>
+<h1 id="示范案例">示范案例</h1>
+<p>我用这样一个需求案例来对比一下各种套路的优劣。</p>
+<p>我们要写一个 struct，它的核心功能是创建一个网络连接 net.Conn 的实例，也就是实现下面这个方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span>) <span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">addr</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Addr</span>) (<span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span>.<span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">addr</span>.<span style="color:#a6e22e">Network</span>(), <span style="color:#a6e22e">addr</span>.<span style="color:#a6e22e">String</span>())
+}
+</code></pre></div><p>针对这个 Dialer ，我们增加两个选项，一个是连接超时，一个是重试次数。代码就变成了这样：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>
+	<span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+	<span style="color:#a6e22e">retry</span> <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span>) <span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">addr</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Addr</span>) (<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">retry</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span>.<span style="color:#a6e22e">Timeout</span> = <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timeout</span>
+		<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span>.<span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">addr</span>.<span style="color:#a6e22e">Network</span>(), <span style="color:#a6e22e">addr</span>.<span style="color:#a6e22e">String</span>())
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span>
+		}
+  }
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+}
+</code></pre></div><p>现在问题来了，我们需要完成一个构造 MyDialer 的方法，在构造时可以指定超时和重试的配置。</p>
+<p>这个问题很简单，对不对？实际上并非如此，我们来看一下怎么设计。</p>
+<h1 id="常规套路">常规套路</h1>
+<p>在说最佳套路之前，先梳理一下常见的常规套路。分析这些套路的优劣，有助于理解最佳套路为何是最佳的。</p>
+<p>常规套路大致可以分三种：</p>
+<ul>
+<li>字段导出为公共</li>
+<li>在生成方法上增加配置字面量</li>
+<li>提供 Set 系列方法</li>
+</ul>
+<h2 id="常规套路1导出字段">常规套路1：导出字段</h2>
+<p>首先我们可以考虑一种最简单的方式，把 MyDialer 里面需要对外设置的字段都导出。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>
+	<span style="color:#a6e22e">Timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+	<span style="color:#a6e22e">Retry</span> <span style="color:#66d9ef">int</span>
+}
+</code></pre></div><p>Go 标准库中大部分结构体都是这样处理的，例如 http.Client 等。这种做法简单得令人发指，不过却有一些问题。</p>
+<ol>
+<li>因为没有初始化方法，部分字段在使用的时候是需要先判断一下调用者是否初始化的。例如这个例子里面，如果 *net.Dialer 没有初始化，那么运行时会直接 panic。</li>
+<li>为了解决 #1 的问题，我们还需要在使用这些字段的时候判断一下是否初始化过，如果没有初始化，就使用默认值。</li>
+<li>使用方法 #2 又引入一个更麻烦的问题，默认值如果不是一个类型的零值，那就无法判断字段的值是未被初始化，还是调用者有意设置的。</li>
+</ol>
+<p>考虑一下这样的代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Dialer</span>) <span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">addr</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Addr</span>) (<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Dialer</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Dialer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>{}
+	}
+	<span style="color:#66d9ef">if</span> int64(<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Timeout</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Timeout</span> = <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#75715e">// 使用默认的超时
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Retry</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#75715e">// 完了……到底是调用者不想重试，还是他忘了设置？
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// d.Retry = 2
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div><h2 id="常规套路2使用-config-结构体">常规套路2：使用 Config 结构体</h2>
+<p>第二种常规套路是设置一个 New 方法，使用一个 Config 结构体。</p>
+<p>我们先说不使用 Config 结构体的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMyDialer</span>(<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>, <span style="color:#a6e22e">retry</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MyDialer</span>{
+		<span style="color:#a6e22e">dialer</span>: <span style="color:#a6e22e">dialer</span>,
+		<span style="color:#a6e22e">timeout</span>: <span style="color:#a6e22e">timeout</span>,
+		<span style="color:#a6e22e">retry</span>: <span style="color:#a6e22e">retry</span>,
+	}
+}
+</code></pre></div><p>在很多语言里面，这是最典型的写法。但是这种写法对于 Go 来说很不合适，原因在于 Go 不支持多态函数，如果以后增加了新的字段，在很多语言里面（例如 Java 或 C++），只要再声明一个参数不同的新的 New 方法就可以了，编译器会自动根据调用处的参数格式选择对应的方法，但是 Go 就不行了。</p>
+<p>为了避免这种问题，很多库会使用 Config 结构体：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Config</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>
+	<span style="color:#a6e22e">Timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+	<span style="color:#a6e22e">Retry</span> <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#75715e">// 这样调用：
+</span><span style="color:#75715e">// dialer := MyDialer(&amp;Config{Timeout: 3*time.Second})
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMyDialer</span>(<span style="color:#a6e22e">config</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Config</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span> {
+	<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">MyDialer</span>{
+		<span style="color:#a6e22e">dialer</span>: <span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">Dialer</span>,
+		<span style="color:#a6e22e">timeout</span>: <span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">Timeout</span>,
+		<span style="color:#a6e22e">retry</span>: <span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">Retry</span>,
+	}
+	<span style="color:#75715e">// 再检查一下设置是否正确
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>{}
+	}
+	<span style="color:#66d9ef">if</span> int64(<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timeout</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timeout</span> = <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">retry</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#75715e">// 问题又来了，调用者是不是故意设置retry为0的呢？
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div><p>使用 Config 模式最麻烦的问题就在于对配置零值的处理。以至于有段时间看到很多人走这样的邪路：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Config</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#75715e">// ... other fields
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Retry</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+}
+</code></pre></div><p>通过配置项指针是否为<code>nil</code>来判断是否为调用者故意设置。不过使用上很麻烦：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 直接用字面量会无法编译：
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">config</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Config</span>{
+	<span style="color:#a6e22e">Retry</span>: <span style="color:#f92672">&amp;</span><span style="color:#ae81ff">3</span>,
+}
+<span style="color:#75715e">// 必须创造一个临时变量：
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">3</span>
+<span style="color:#a6e22e">config</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Config</span>{
+	<span style="color:#a6e22e">Retry</span>: <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">r</span>,
+}
+</code></pre></div><h2 id="常用套路3提供-set-方法">常用套路3：提供 Set 方法</h2>
+<p>提供 Set 方法是另一种常见套路，配合上 New 方法使用，几乎能满足绝大多数情况。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">struct</span>{<span style="color:#f92672">...</span>}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMyDialer</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">MyDialer</span>{
+		<span style="color:#a6e22e">dialer</span>: <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>{},
+		<span style="color:#a6e22e">timeout</span>: <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+		<span style="color:#a6e22e">retry</span>: <span style="color:#ae81ff">2</span>,
+	}
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyDialer</span>) <span style="color:#a6e22e">SetRetry</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">retry</span> = <span style="color:#a6e22e">r</span>
+}
+</code></pre></div><p>在许多场景下，Set 模式已经非常不错了，但是在下面两种情况下仍然有些麻烦：</p>
+<ol>
+<li>有一些对象的字段希望只在生成的时候配置一次，之后就不能再修改了。这个时候用 Set 就不能很好地保证这一点。</li>
+<li>有时候我们希望我们提供出去的库的功能是以 interface 来表示的，这样可以更容易地将实现替换掉。在这种情况下使用 Set 模式会大大增加 interface 的方法数量，从而增加替换实现的成本。</li>
+</ol>
+<p>举例来说：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 接下来 MyDialer 以接口方式提供
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">addr</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Addr</span>) (<span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#66d9ef">error</span>)
+}
+
+<span style="color:#75715e">// 而 myDialer 作为 MyDialer 接口的实现，是不导出的
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myDialer</span> <span style="color:#66d9ef">struct</span> {<span style="color:#f92672">...</span>}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMyDialer</span>() <span style="color:#a6e22e">MyDialer</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myDialer</span>{}
+}
+</code></pre></div><p>在这种设计下，如果使用 Set 模式，就需要为 MyDialer 这个接口增加 <code>SetRetry</code>, <code>SetTimeout</code>, <code>SetDialer</code> 这一系列方法，使用方如果在写单测等时候需要替换掉 MyDialer 的话，也需要在自己的测试替身（Test Double）实现上增加这三个方法。</p>
+<h1 id="option-types-套路">Option Types 套路</h1>
+<p>Rob Pike 把这个套路称为 Option Types ，我就沿用这个方法。这种看上去似乎是23种经典设计模式中的命令模式的一种形态。</p>
+<p>Options Types 套路的核心思路是创建一个新的Option类型，这个类型负责修改配置，被调用方接收这个类型来修改自己的选型，调用方创建这个类型传给被调用方。</p>
+<p>我们继续刚才的例子，现在假设我们分别设计了 MyDialer 的接口和实现，让调用者使用 MyDialer 接口，但是我们提供 New 方法创建 MyDialer 的实现 myDialer</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// MyDialer 是导出的接口类型
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyDialer</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">DialContext</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Addr</span>) (<span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#66d9ef">error</span>)
+}
+
+<span style="color:#75715e">// myDialer 是未导出的接口实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myDialer</span> <span style="color:#66d9ef">struct</span> {<span style="color:#f92672">...</span>}
+</code></pre></div><h2 id="实现步骤">实现步骤</h2>
+<ol>
+<li>首先，我们需要创建一个 Option 类型。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Option</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">apply</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>)
+}
+</code></pre></div><ol start="2">
+<li>接下来我们让 myDialer 可以处理这个类型。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 我们可以在构造方法中使用
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewMyDialer</span>(<span style="color:#a6e22e">opts</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Option</span>) <span style="color:#a6e22e">MyDialer</span> {
+	<span style="color:#75715e">// 首先我们将默认值填上
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myDialer</span>{
+		<span style="color:#a6e22e">timeout</span>: <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+		<span style="color:#a6e22e">retry</span>: <span style="color:#ae81ff">2</span>,
+	}
+	<span style="color:#75715e">// 接下来用传入的 Option 修改默认值，如果不需要修改默认值，
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 就不需要传入对应的 Option
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">opt</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">opts</span> {
+		<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">apply</span>(<span style="color:#a6e22e">d</span>)
+	}
+	<span style="color:#75715e">// 最后再检查一下，如果 Option 没有传入自定义的必要字段，我
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 们在这里补一下。
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>{}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">d</span>
+}
+
+<span style="color:#75715e">// 我们也可以提供单独的方法，并随接口导出，提供类似 Set 模式的功能。
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) <span style="color:#a6e22e">ApplyOptions</span>(<span style="color:#a6e22e">opts</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Option</span>) {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">opt</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">opts</span> {
+		<span style="color:#a6e22e">opt</span>.<span style="color:#a6e22e">apply</span>(<span style="color:#a6e22e">d</span>)
+	}
+}
+</code></pre></div><ol start="3">
+<li>现在我们来实现Option类型。</li>
+</ol>
+<p>先用常规方式写一种啰嗦的写法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">retryOpt</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">retry</span> <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RetryOption</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Option</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">retryOpt</span>{<span style="color:#a6e22e">retry</span>:<span style="color:#a6e22e">r</span>}
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">o</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">retryOpt</span>) <span style="color:#a6e22e">apply</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">retry</span> = <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">retry</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">timeoutOpt</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TimeoutOption</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) <span style="color:#a6e22e">Option</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">timeoutOpt</span>{<span style="color:#a6e22e">timeout</span>: <span style="color:#a6e22e">d</span>}
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">o</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">retryOpt</span>) <span style="color:#a6e22e">apply</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timeout</span> = <span style="color:#a6e22e">o</span>.<span style="color:#a6e22e">timeout</span>
+}
+<span style="color:#75715e">// ... dialer 的 Opt 类似
+</span></code></pre></div><p>常规方式里面需要一个实现 Option 接口的类型，和一个该类型的构造方法。所以我们设置3个字段，就需要写9段代码。</p>
+<p>下面我们用<strong>函数转单方法接口</strong>的套路，来简化实现 Option 的代码。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">optFunc</span> <span style="color:#66d9ef">func</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>)
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">optFunc</span>) <span style="color:#a6e22e">apply</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+	<span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">d</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RetryOption</span>(<span style="color:#a6e22e">r</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Option</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">optFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">retry</span> = <span style="color:#a6e22e">r</span>
+	})
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TimeoutOption</span>(<span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) <span style="color:#a6e22e">Option</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">optFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timeout</span> = <span style="color:#a6e22e">timeout</span>
+	})
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DialerOption</span>(<span style="color:#a6e22e">dialer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>) <span style="color:#a6e22e">Option</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">optFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myDialer</span>) {
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">dialer</span> = <span style="color:#a6e22e">dialer</span>
+	})
+}
+</code></pre></div><h2 id="使用示例">使用示例</h2>
+<p>接下来我们使用这个 MyDialer，看看有多方便：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 无自定义 Option，全部使用默认的
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewMyDialer</span>()
+<span style="color:#75715e">// 只修改 Retry，并且 Retry 是0次
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewMyDialer</span>(<span style="color:#a6e22e">RetryOption</span>(<span style="color:#ae81ff">0</span>))
+<span style="color:#75715e">// 修改多个 Option
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewMyDialer</span>(<span style="color:#a6e22e">RetryOption</span>(<span style="color:#ae81ff">5</span>), <span style="color:#a6e22e">TimeoutOption</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span>), <span style="color:#a6e22e">DialerOption</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dialer</span>{
+	<span style="color:#a6e22e">KeepAlive</span>: <span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+}))
+</code></pre></div><h2 id="补充">补充</h2>
+<p>Rob Pike 是在2014年写 Blog 总结这个套路的，当时他的 Option 不是一个 interface，而是一个function。使用上略有差异。目前普遍认为函数转单方法接口这种做法更灵活，建议大家使用这个方式。</p>
+<h1 id="总结">总结</h1>
+<p>最后我说一个我总结这个套路的心得。</p>
+<p>首先，最初我在寻找一个创建对象的最佳套路时，主要的方向还是看那五个创建型模式（工厂、抽象工厂、生成器、单例、原型），看来看去也没有找到合适的，没想到截止目前找到的最佳套路是命令模式。再次说明套路重要，对套路的创新更加重要。</p>
+<p>其次，我想感叹一下，作为 <a href="mailto:r@google.com">r@google.com</a> 这个顶级邮箱的拥有者，Rob Pike 老爷子仍然坚持亲自写代码，并在代码细节上如此尽善尽美，令人敬仰。而我们国内技术圈却经常花大量时间讨论架构师应不应该写代码，甚至架构师是否需要会写代码，这可能也是许多技术文章字里行间散发着一股伤痕文学气息的原因之一吧。</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+      <p>Dig that hole, forgot the sun.</p>
+    
+    
+      
+        © 2020
+      
+       Eddix Chen 
+    
+    
+       · 
+       <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

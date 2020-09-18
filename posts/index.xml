@@ -6,10 +6,20 @@
     <description>Recent content in Posts on 🔱The Wall of Eddix</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 02 Jun 2020 12:09:34 +0800</lastBuildDate>
-    
-	<atom:link href="http://eddix.me/posts/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Fri, 18 Sep 2020 15:20:09 +0800</lastBuildDate><atom:link href="http://eddix.me/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[Go]设置各种选项的最佳套路</title>
+      <link>http://eddix.me/posts/option-types-pattern/</link>
+      <pubDate>Fri, 18 Sep 2020 15:20:09 +0800</pubDate>
+      
+      <guid>http://eddix.me/posts/option-types-pattern/</guid>
+      <description>背景 在 Go 里面写一个 struct 时，经常会遇到要给 struct 里面的各个字段提供设置功能。这个问题看起来很简单很容易，实际上困扰了不少人，连 Go 的三巨头之一 Rob Pike 都曾经为之苦恼了一段时间，后来找到了最佳实践后还为此开心地写了一篇 Blog。
+我最早是在 GRPC 的代码里发现这个套路的，后来在今年7月 Go 官方 Blog 里又看到了对这个套路的推荐，以及 Rob Pike 的 Blog 链接。我自己在代码里尝试之后感觉很好，又推荐给同事尝试，大家都很喜欢。
+示范案例 我用这样一个需求案例来对比一下各种套路的优劣。
+我们要写一个 struct，它的核心功能是创建一个网络连接 net.Conn 的实例，也就是实现下面这个方法：
+type MyDialer struct { dialer *net.Dialer } func (d *MyDialer) DialContext(ctx context.Context, addr net.Addr) (net.Conn, error) { return d.dialer.DialContext(ctx, addr.Network(), addr.String()) } 针对这个 Dialer ，我们增加两个选项，一个是连接超时，一个是重试次数。代码就变成了这样：
+type MyDialer struct { dialer *net.Dialer timeout time.Duration retry int } func (d *MyDialer) DialContext(ctx context.</description>
+    </item>
     
     <item>
       <title>[Go] 写一个守护协程的通用套路是什么？</title>
